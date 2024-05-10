@@ -32,13 +32,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
+                val inputText = s.toString()
                 if (isUserInputOnEtNameCR) {
-                    val inputText = s.toString()
                     if (inputText.isNotEmpty()) {
-                        val amountInEuros = inputText.toDouble()
-                        val convertedAmountInColones = amountInEuros * conversionRate
-                        isUserInputOnEtNameCR = false
-                        etNameCR.setText(convertedAmountInColones.toString())
+                        val amountInEuros = inputText.toIntOrNull() ?: 0
+                        if (amountInEuros != 0){
+                            val convertedAmountInColones = amountInEuros * conversionRate
+                            isUserInputOnEtNameCR = false
+                            etNameCR.setText(convertedAmountInColones.toString())
+                        }
                     } else {
                         etNameCR.text = null
                     }
@@ -47,6 +49,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        // Flag to indicate whether text change in etName is caused by user input
+        var isUserInputOnEtName = true
 
         etNameCR.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -58,21 +63,26 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (isUserInputOnEtNameCR) {
-                    val inputText = s.toString()
+                val inputText = s.toString()
+                if (isUserInputOnEtName) {
                     if (inputText.isNotEmpty()) {
-                        val amountInColones = inputText.toDouble()
-                        val convertedAmountInEuros = amountInColones / conversionRate
-                        isUserInputOnEtNameCR = false
-                        etName.setText(convertedAmountInEuros.toString())
+                        val amountInColones = inputText.toIntOrNull() ?: 0
+                        if(amountInColones != 0){
+                            val convertedAmountInEuros = amountInColones / conversionRate
+                            isUserInputOnEtName = false
+                            etName.setText(convertedAmountInEuros.toString())
+                        }
                     } else {
                         etName.text = null
                     }
                 } else {
-                    isUserInputOnEtNameCR = true
+                    isUserInputOnEtName = true
                 }
             }
         })
     }
+
+
+
 
 }
